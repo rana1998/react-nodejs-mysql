@@ -6,10 +6,48 @@ import Post from "./pages/Post";
 import Login from "./pages/Login";
 import Registration from "./pages/Registration";
 import { AuthContext } from "./helpers/AuthContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 function App() {
-  const [authState, setAuthstate] = useState(false);
+  const [authState, setAuthstate] = useState({
+    username: "",
+    id: 0,
+    status: false,
+  });
+
+  useEffect(() => {
+    axios.get('http://localhost:3001/auth/auth', {
+      headers: {
+        accessToken: localStorage.getItem('accessToken'),
+      }
+    }).then((response) => {
+      if(response.data.error) 
+      {
+        setAuthstate({
+          ...authState,
+          status: false,
+        })
+      }
+      else{
+        setAuthstate({
+          username: response.data.username,
+          id: response.data.id,
+          status: true,
+        });
+      }
+
+    })
+  }, []);
+
+  const logout = () => {
+    localStorage.removeItem("accessToken");
+    setAuthstate({
+      username: "",
+      id: 0,
+      status: false,
+    })
+  }
 
   return (
     <div className="App">
@@ -18,14 +56,17 @@ function App() {
         <div className="navbar">
           <Link to="/"> Home Page</Link>
           <Link to="/createpost"> Create A Post</Link>
-          {!authState && (
+          {!authState.status ? (
             <>
             <Link to="/Login"> Login</Link>
             <Link to="/registration"> Registration</Link>
             </>
+          ):(
+            <button onClick = {logout} >Logout</button>
           )
           }
           
+          <h1>{authState.username}</h1>
         </div>
         <Switch>
           <Route path="/" exact component={Home} />

@@ -14,14 +14,17 @@ export default function Login() {
     const login = () => {
         const data = {username: username, password: password };
         axios.post("http://localhost:3001/auth/login", data).then((response) => {
-            console.log(response.data);
+
             if(response.data.error) 
             {
                 alert(response.data.error);
             }
             else{
-                localStorage.setItem("accessToken", response.data);
-                setAuthstate(true);
+                localStorage.setItem("accessToken", response.data.token);
+                setAuthstate({username: response.data.username,
+                    id: response.data.id,
+                    status: true,
+                });
                 history.push("/");
             }
             
