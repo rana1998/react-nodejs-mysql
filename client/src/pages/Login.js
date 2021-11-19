@@ -7,7 +7,7 @@ export default function Login() {
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const { setAuthstate } = useContext(AuthContext);
+    const { setAuthState } = useContext(AuthContext);
 
     let history = useHistory();
 
@@ -21,7 +21,7 @@ export default function Login() {
             }
             else{
                 localStorage.setItem("accessToken", response.data.token);
-                setAuthstate({username: response.data.username,
+                setAuthState({username: response.data.username,
                     id: response.data.id,
                     status: true,
                 });

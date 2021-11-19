@@ -5,12 +5,15 @@ import CreatePost from "./pages/CreatePost";
 import Post from "./pages/Post";
 import Login from "./pages/Login";
 import Registration from "./pages/Registration";
+import PageNotFound from "./pages/PageNotFound";
+import Profile from "./pages/Profile";
+
 import { AuthContext } from "./helpers/AuthContext";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
 function App() {
-  const [authState, setAuthstate] = useState({
+  const [authState, setAuthState] = useState({
     username: "",
     id: 0,
     status: false,
@@ -24,13 +27,13 @@ function App() {
     }).then((response) => {
       if(response.data.error) 
       {
-        setAuthstate({
+        setAuthState({
           ...authState,
           status: false,
         })
       }
       else{
-        setAuthstate({
+        setAuthState({
           username: response.data.username,
           id: response.data.id,
           status: true,
@@ -42,7 +45,7 @@ function App() {
 
   const logout = () => {
     localStorage.removeItem("accessToken");
-    setAuthstate({
+    setAuthState({
       username: "",
       id: 0,
       status: false,
@@ -51,18 +54,23 @@ function App() {
 
   return (
     <div className="App">
-      <AuthContext.Provider value={{authState, setAuthstate}}>
+      <AuthContext.Provider value={{authState, setAuthState}}>
       <Router>
           <div className="navbar">
             <div className="links">
-              <Link to="/"> Home Page</Link>
-              <Link to="/createpost"> Create A Post</Link>
-              {!authState.status && (
+              
+              {!authState.status ? (
                 <>
                   <Link to="/login"> Login</Link>
                   <Link to="/registration"> Registration</Link>
                 </>
+              ):(
+                <>
+                  <Link to="/"> Home Page</Link>
+                  <Link to="/createpost"> Create A Post</Link>
+                </>
               )}
+              
             </div>
             <div className="loggedInContainer">
               <h1>{authState.username} </h1>
@@ -75,6 +83,8 @@ function App() {
           <Route path="/post/:id" exact component={Post} />
           <Route path="/registration" exact component={Registration} />
           <Route path="/login" exact component={Login} />
+          <Route path="/profile/:id" exact component={Profile} />
+          <Route path="*" exact component={PageNotFound} />
         </Switch>
       </Router>
       </AuthContext.Provider>
