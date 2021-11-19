@@ -80,11 +80,28 @@ function Post() {
         let newTitle = prompt("Enter New Title:")
         axios.put("http://localhost:3001/posts/title",{
           newTitle: newTitle, id: id
+        },
+        {
+          headers: {
+            accessToken: localStorage.getItem('accessToken')
+          }
         }) 
+
+        setPostObject({...postObject, title: newTitle})
       }
       else
       {
         let newPostTest = prompt("Enter New Text:")
+        axios.put("http://localhost:3001/posts/postText",{
+          newText: newPostTest, id: id
+        },
+        {
+          headers: {
+            accessToken: localStorage.getItem('accessToken')
+          }
+        }) 
+
+        setPostObject({...postObject, postText: newPostTest})
       }
   }
   return (
